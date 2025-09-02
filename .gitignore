@@ -1,0 +1,32 @@
+# 環境與機密
+.env
+.env.*
+letsencrypt/
+nginx/certs/
+nginx/ssl/
+*.key
+*.crt
+*.pem
+# Docker 產物與資料卷（依你的實際路徑調整）
+db/data/
+mosquitto/data/
+mosquitto/log/
+**/data/
+**/logs/
+
+# Node/前端
+node_modules/
+dist/
+build/
+.next/
+.out/
+.cache/
+.vite/
+
+# 系統/編輯器
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.bak.*

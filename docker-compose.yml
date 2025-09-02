@@ -1,0 +1,90 @@
+name: mountainlink
+networks:
+  mountainlink-net:
+    external: true
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mountainlink
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro   # ← 新增：第一次啟動自動跑 SQL
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U postgres -d mountainlink"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+  mosq:
+    image: eclipse-mosquitto:2
+    container_name: mosq
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto:/mosquitto
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      JWT_SECRET: please_change_me 
+      PORT: "4000"
+      MQTT_URL: "${MQTT_URL:-mqtt://admin:change_me@mosq:1883}"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/mountainlink"
+      REDIS_URL: "redis://redis:6379"
+    depends_on:
+      db:
+        condition: service_healthy                 # ← 等 DB OK
+      mosq:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+        NEXT_PUBLIC_GOOGLE_MAP_ID_STD: ${NEXT_PUBLIC_GOOGLE_MAP_ID_STD}
+        NEXT_PUBLIC_GOOGLE_MAP_ID_SAT: ${NEXT_PUBLIC_GOOGLE_MAP_ID_SAT}
+    environment:
+      NEXT_PUBLIC_API_BASE: "/api"
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}"
+      NEXT_PUBLIC_GOOGLE_MAP_ID_STD: "${NEXT_PUBLIC_GOOGLE_MAP_ID_STD:-}"   # STD / SAT 仍保留
+      NEXT_PUBLIC_GOOGLE_MAP_ID_SAT: "${NEXT_PUBLIC_GOOGLE_MAP_ID_SAT:-}"
+    depends_on:
+      backend:
+        condition: service_started
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
+    networks: [mountainlink-net]
+    restart: unless-stopped
+
+volumes:
+  db: {}

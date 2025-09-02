@@ -1,0 +1,8 @@
+html, body, #__next { height: 100%; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+a { color: #0b57d0; text-decoration: none; }
+a:hover { text-decoration: underline; }

@@ -1,0 +1,17 @@
+{
+  "name": "mountainlink-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^9",
+    "@fastify/jwt": "^8",
+    "bcrypt": "^5",
+    "bcryptjs": "^2.4.3",
+    "fastify": "^4.0.0",
+    "mqtt": "^5.10.0",
+    "pg": "^8"
+  }
+}
