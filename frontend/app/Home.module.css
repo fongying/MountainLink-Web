@@ -1,0 +1,84 @@
+/* 整體頁面容器 */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 垂直置中 */
+  align-items: center; /* 水平置中 */
+  min-height: 100vh; /* 確保佔滿整個視窗高度 */
+  background-color: #f0f2f5; /* 輕微的背景色 */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  text-align: center; /* 文字置中 */
+  padding: 20px;
+  box-sizing: border-box; /* 確保 padding 不會撐大元素 */
+}
+
+/* MountainLink 標題樣式 */
+.brandName {
+  font-size: 4.5rem; /* 大字體 */
+  font-weight: 800; /* 更粗的字重 */
+  color: #2c3e50; /* 深色文字，增加質感 */
+  margin-bottom: 30px; /* 與導航連結的間距 */
+  letter-spacing: -2px; /* 微調字距 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* 輕微陰影 */
+}
+
+/* 導航連結容器 */
+.navigation {
+  display: flex;
+  flex-wrap: wrap; /* 小螢幕時換行 */
+  gap: 20px; /* 連結之間的間距 */
+  justify-content: center; /* 連結置中 */
+}
+
+/* 導航連結按鈕樣式 */
+.navButton {
+  padding: 12px 25px;
+  background-color: #3498db; /* 藍色按鈕 */
+  color: white;
+  text-decoration: none; /* 移除底線 */
+  border-radius: 8px; /* 圓角 */
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 平滑過渡效果 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 輕微陰影 */
+}
+
+.navButton:hover {
+  background-color: #2980b9; /* 滑鼠懸停時顏色變深 */
+  transform: translateY(-2px); /* 輕微上浮效果 */
+}
+
+.navButton:active {
+  transform: translateY(0); /* 點擊時回到原位 */
+}
+
+/* 版權資訊 */
+.footer {
+  margin-top: 50px; /* 與上方內容的間距 */
+  font-size: 0.9rem;
+  color: #7f8c8d; /* 較淺的顏色 */
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .brandName {
+    font-size: 3.5rem; /* 小螢幕時縮小字體 */
+  }
+
+  .navButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .brandName {
+    font-size: 2.5rem; /* 更小的螢幕時進一步縮小 */
+    margin-bottom: 20px;
+  }
+  .navigation {
+    flex-direction: column; /* 超小螢幕時連結垂直排列 */
+    gap: 15px;
+  }
+}

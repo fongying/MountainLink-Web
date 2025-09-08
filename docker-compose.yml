@@ -59,13 +59,19 @@ services:
       context: ./frontend
       args:
         NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-        NEXT_PUBLIC_GOOGLE_MAP_ID_STD: ${NEXT_PUBLIC_GOOGLE_MAP_ID_STD}
-        NEXT_PUBLIC_GOOGLE_MAP_ID_SAT: ${NEXT_PUBLIC_GOOGLE_MAP_ID_SAT}
+        NEXT_PUBLIC_GMAP_ID_ROADMAP: ${NEXT_PUBLIC_GMAP_ID_ROADMAP}
+        NEXT_PUBLIC_GMAP_ID_TERRAIN: ${NEXT_PUBLIC_GMAP_ID_TERRAIN}
+        NEXT_PUBLIC_GMAP_ID_SATELLITE: ${NEXT_PUBLIC_GMAP_ID_SATELLITE}
+        NEXT_PUBLIC_GMAP_ID_HYBRID: ${NEXT_PUBLIC_GMAP_ID_HYBRID}
+        NEXT_PUBLIC_GMAP_ID_BUILDINGS3D: ${NEXT_PUBLIC_GMAP_ID_BUILDINGS3D}
     environment:
       NEXT_PUBLIC_API_BASE: "/api"
-      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:-}"
-      NEXT_PUBLIC_GOOGLE_MAP_ID_STD: "${NEXT_PUBLIC_GOOGLE_MAP_ID_STD:-}"   # STD / SAT 仍保留
-      NEXT_PUBLIC_GOOGLE_MAP_ID_SAT: "${NEXT_PUBLIC_GOOGLE_MAP_ID_SAT:-}"
+      NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+      NEXT_PUBLIC_GMAP_ID_ROADMAP: ${NEXT_PUBLIC_GMAP_ID_ROADMAP}
+      NEXT_PUBLIC_GMAP_ID_TERRAIN: ${NEXT_PUBLIC_GMAP_ID_TERRAIN}
+      NEXT_PUBLIC_GMAP_ID_SATELLITE: ${NEXT_PUBLIC_GMAP_ID_SATELLITE}
+      NEXT_PUBLIC_GMAP_ID_HYBRID: ${NEXT_PUBLIC_GMAP_ID_HYBRID}
+      NEXT_PUBLIC_GMAP_ID_BUILDINGS3D: ${NEXT_PUBLIC_GMAP_ID_BUILDINGS3D}
     depends_on:
       backend:
         condition: service_started
@@ -85,6 +91,16 @@ services:
         condition: service_started
     networks: [mountainlink-net]
     restart: unless-stopped
+    
+  nodered:
+    image: nodered/node-red
+    container_name: nodered
+    ports:
+      - "1880:1880"
+    volumes:
+      - node_red_data:/data
+    restart: unless-stopped
 
 volumes:
   db: {}
+  node_red_data:

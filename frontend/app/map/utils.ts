@@ -14,6 +14,8 @@ export type Device = {
   hr?: number | null;
   battery?: number | null;
   ts?: number | string | null;
+  last_ts?: string | null;    // 後端清單的欄位
+  sos?: boolean | null;
 };
 
 export function fromISO(): string {
@@ -23,16 +25,28 @@ export function fromISO(): string {
 }
 
 export function pickMapId(layer: Layer): string | undefined {
-  // 若未設定就回傳 undefined（使用 Google 預設樣式）
-  const env: Record<string, string | undefined> = {
-    roadmap:     process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_ROADMAP,
-    terrain:     process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_TERRAIN,
-    satellite:   process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_SATELLITE,
-    hybrid:      process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_HYBRID,
-    buildings3d: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_BUILDINGS3D,
+  if (layer === 'photo3d') return undefined; // 3D 寫實不吃 mapId
+
+  type VLayer = Exclude<Layer, 'photo3d'>;
+
+  const NEW_IDS: Record<VLayer, string | undefined> = {
+    roadmap:     process.env.NEXT_PUBLIC_GMAP_ID_ROADMAP,
+    terrain:     process.env.NEXT_PUBLIC_GMAP_ID_TERRAIN,
+    satellite:   process.env.NEXT_PUBLIC_GMAP_ID_SATELLITE,
+    hybrid:      process.env.NEXT_PUBLIC_GMAP_ID_HYBRID,
+    buildings3d: process.env.NEXT_PUBLIC_GMAP_ID_BUILDINGS3D,
   };
-  if (layer === 'photo3d') return undefined;
-  return env[layer] || undefined;
+
+  const LEGACY_IDS: Record<VLayer, string | undefined> = {
+    roadmap:     process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_STD,
+    terrain:     process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_STD,
+    satellite:   process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_SAT,
+    hybrid:      process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_SAT,
+    buildings3d: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || process.env.NEXT_PUBLIC_GOOGLE_MAP_ID_STD,
+  };
+
+  const key = layer as VLayer;
+  return NEW_IDS[key] ?? LEGACY_IDS[key] ?? undefined;
 }
 
 export function safe(v: any): string {

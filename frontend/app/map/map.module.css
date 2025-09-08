@@ -1,0 +1,183 @@
+/* 根容器與地圖容器 */
+.root {
+  height: 100vh;
+  width: 100vw;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", Arial,
+    "Helvetica Neue", "PingFang TC", sans-serif;
+  background: #f6f7f9;
+}
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 10;
+  background: #ffffffcc; /* 半透明以免遮住地圖細節 */
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  padding: 10px 12px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.label {
+  font-weight: 600;
+  opacity: 0.9;
+  margin-right: 4px;
+}
+.select {
+  min-width: 160px;
+  height: 36px;
+  border-radius: 10px;
+  padding: 6px 10px;
+  border: 1px solid #d9dce3;
+  background: #fff;
+}
+.btn {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid #ced3dd;
+  background: #f4f6fa;
+  cursor: pointer;
+}
+.btn:hover {
+  background: #eef1f7;
+}
+.chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.err {
+  margin-top: 6px;
+  color: #b00020;
+  font-weight: 600;
+}
+
+/* ===== 右上資訊面板 ===== */
+.info {
+  position: absolute;
+  right: 12px;
+  top: 72px; /* 避開上方控制列 */
+  width: min(360px, 90vw);
+  z-index: 20;
+  background: #fff;
+  border: 1px solid #e5e7ee;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+}
+.infoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.id {
+  font-size: 16px;
+}
+.hdrBtns {
+  display: inline-flex;
+  gap: 6px;
+}
+.iconBtn {
+  height: 32px;
+  width: 32px;
+  border-radius: 8px;
+  border: 1px solid #e2e5ec;
+  background: #f8f9fc;
+  cursor: pointer;
+}
+.iconBtn:hover {
+  background: #eef1f7;
+}
+
+/* 面板內容網格 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.item {
+  background: #fafbfe;
+  border: 1px solid #edf0f6;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.span2 {
+  grid-column: 1 / -1;
+}
+.k {
+  font-size: 12px;
+  color: #6a7280;
+  margin-bottom: 4px;
+}
+.v {
+  font-size: 15px;
+  font-weight: 600;
+}
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  letter-spacing: 0.2px;
+}
+.bad {            /* HR 異常用 */
+  color: #d32f2f;
+  font-weight: 600;
+}
+.sosOn {          /* SOS=true */
+  color: #d32f2f;
+  font-weight: 700;
+}
+.sosOff {         /* SOS=false */
+  color: inherit;
+  font-weight: 400;
+}
+
+/* ===== 平板/窄螢幕優化 ===== */
+@media (max-width: 1024px) {
+  .select {
+    min-width: 140px;
+  }
+  .info {
+    top: 80px;
+    width: min(420px, 96vw);
+  }
+}
+@media (max-width: 768px) {
+  .topbar {
+    left: 8px;
+    right: 8px;
+    padding: 8px 10px;
+  }
+  .select {
+    min-width: 120px;
+  }
+  .btn {
+    padding: 0 10px;
+  }
+  .info {
+    right: 8px;
+    top: 88px;
+    width: 92vw;
+  }
+}

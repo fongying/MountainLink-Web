@@ -1,10 +1,27 @@
-'use client';
-export default function Home() {
+import Link from 'next/link';
+import styles from './Home.module.css'; // 引入 CSS 模組
+
+export default function HomePage() {
   return (
-    <main style={{padding:24,fontFamily:'system-ui'}}>
-      <h1>MountainLink</h1>
-      <p>前端就緒。請前往 <a href="/login">登入</a> 或 <a href="/map">地圖</a>。</p>
-      <p><a href="/api/health" target="_blank" rel="noreferrer">/api/health</a> 測試後端。</p>
-    </main>
+    <div className={styles.container}>
+      {/* MountainLink 品牌名稱 */}
+      <h1 className={styles.brandName}>MountainLink</h1>
+
+      {/* 導航連結 */}
+      <nav className={styles.navigation}>
+        <Link href="/devices/admin" className={styles.navButton}>
+          裝置管理
+        </Link>
+        <Link href="/map" className={styles.navButton}>
+          地圖
+        </Link>
+        {/* 如果有其他連結，可以在這裡新增 */}
+      </nav>
+
+      {/* 版權資訊 */}
+      <footer className={styles.footer}>
+        © {new Date().getFullYear()} MountainLink. All rights reserved.
+      </footer>
+    </div>
   );
 }
