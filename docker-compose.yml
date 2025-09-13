@@ -14,7 +14,7 @@ services:
       - db:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro   # ← 新增：第一次啟動自動跑 SQL
     healthcheck:
-      test: ["CMD-SHELL","pg_isready -U postgres -d mountainlink"]
+      test: ["CMD-SHELL","pg_isready -U \"admin@mountain.link\" -d mountainlink"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -38,11 +38,14 @@ services:
 
   backend:
     build: ./backend
+    ports:
+      - "8080:8080"
     environment:
       JWT_SECRET: please_change_me 
       PORT: "4000"
       MQTT_URL: "${MQTT_URL:-mqtt://admin:change_me@mosq:1883}"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/mountainlink"
+      #DATABASE_URL: "postgres://postgres:postgres@db:5432/mountainlink"
+      DATABASE_URL: "postgres://admin@mountain.link:a41961301@db:5432/mountainlink"
       REDIS_URL: "redis://redis:6379"
     depends_on:
       db:
@@ -72,11 +75,14 @@ services:
       NEXT_PUBLIC_GMAP_ID_SATELLITE: ${NEXT_PUBLIC_GMAP_ID_SATELLITE}
       NEXT_PUBLIC_GMAP_ID_HYBRID: ${NEXT_PUBLIC_GMAP_ID_HYBRID}
       NEXT_PUBLIC_GMAP_ID_BUILDINGS3D: ${NEXT_PUBLIC_GMAP_ID_BUILDINGS3D}
+      BACKEND_URL: "http://backend:4000"
     depends_on:
       backend:
         condition: service_started
     networks: [mountainlink-net]
     restart: unless-stopped
+    ports:
+      - "3000:3000"
 
   nginx:
     image: nginx:1.27-alpine

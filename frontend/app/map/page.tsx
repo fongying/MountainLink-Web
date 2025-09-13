@@ -44,6 +44,48 @@ function MapInner() {
   const followRef = useRef(follow);
   useEffect(() => { followRef.current = follow; }, [follow]);
 
+  const sosHandledRef = useRef<number>(0); // 防噴多次
+  useEffect(() => {
+    const es = new EventSource('/api/stream');
+
+    es.onmessage = (e) => {
+      if (!e?.data) return;
+      let msg: any;
+      try { msg = JSON.parse(e.data); } catch { return; }
+
+      if (msg?.type === 'sos' && msg?.device_id) {
+        // 去抖：同一秒多次訊息只處理一次
+        const key = Number(new Date(msg.ts || Date.now()).getTime());
+        if (key === sosHandledRef.current) return;
+        sosHandledRef.current = key;
+
+        const id = String(msg.device_id);
+        const textZh = `${id} 發送求救訊號，請確認地點以及開始救援行動`;
+        const textEn = `${id} send SOS! please check user's location and start rescue operations`;
+        const ok = window.confirm(`${textZh}\n\n${textEn}`);
+
+        if (ok) {
+          // 切換到該裝置 + 啟動追蹤 + 飛到點位
+          setPicked(id);
+          // 你現有的追蹤邏輯（若用布林）
+          setFollow(true);
+          focusOnDevice(id);
+          if (msg.lat && msg.lon && gMapRef.current) {
+            gMapRef.current.panTo({ lat: Number(msg.lat), lng: Number(msg.lon) });
+            if ((gMapRef.current.getZoom?.() || 10) < 15) gMapRef.current.setZoom(15);
+          }
+        }
+      }
+    };
+
+    es.onerror = () => {
+      // 簡單重試：瀏覽器會自動重連 SSE，不用手動處理
+      // 這裡可以放個 console.warn
+    };
+
+    return () => es.close();
+  }, []);
+
   // --- Google Vector Map refs ---
   const gMapRef = useRef<any>(null);
   const gPolylineRef = useRef<any>(null);
