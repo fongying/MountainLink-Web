@@ -30,3 +30,7 @@ build/
 *.log
 *.tmp
 *.bak.*
+
+# Mosquitto 密碼檔，請勿入庫
+mosquitto/passwd
+mosquitto/config/passwd
